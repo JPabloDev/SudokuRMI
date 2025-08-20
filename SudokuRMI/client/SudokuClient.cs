@@ -24,7 +24,9 @@ namespace SudokuRMI.client
                 switch (opcion)
                 {
                     case "1":
-                        comando = "GENERAR";
+                        Console.WriteLine("Elige tamaño del Sudoku (4, 9 o 16): ");
+                        int tamaño = int.Parse(Console.ReadLine());
+                        comando = $"GENERAR {tamaño}";
                         break;
                     case "2":
                         comando = "MOSTRAR";

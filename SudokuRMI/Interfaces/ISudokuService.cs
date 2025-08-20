@@ -8,7 +8,7 @@ namespace SudokuRMI.Interfaces
 {
     public interface ISudokuService
     {
-        void GenerarSudoku();
+        int[,] GenerarSudoku(int size);
         string MostrarTablero();
         bool InsertarNumero(int fila, int col, int valor);
         bool EstaCompleto();

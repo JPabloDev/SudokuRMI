@@ -11,8 +11,6 @@ namespace SudokuRMI.server
 
         public void Start()
         {
-            sudoku.GenerarSudoku();
-
             TcpListener server = new TcpListener(IPAddress.Any, 5000);
             server.Start();
             Console.WriteLine("Servidor Sudoku escuchando en puerto 5000...");
@@ -41,8 +39,9 @@ namespace SudokuRMI.server
             switch (parts[0])
             {
                 case "GENERAR":
-                    sudoku.GenerarSudoku();
-                    return "Sudoku generado!\n";
+                    int size = parts.Length > 1 ? int.Parse(parts[1]) : 9;
+                    sudoku.GenerarSudoku(size);
+                    return $"Sudoku {size}x{size} generado!\n";
                 case "MOSTRAR":
                     return sudoku.MostrarTablero();
                 case "INSERTAR":

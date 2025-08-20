@@ -6,63 +6,47 @@ namespace SudokuRMI.Services
 {
     public class SudokuService : ISudokuService
     {
-        private SudokuBoard _tablero;
-
-        public void GenerarSudoku()
+        private SudokuBoard _sudukoBoard;
+        public int[,] GenerarSudoku(int size)
         {
-            _tablero = new SudokuBoard();
-            _tablero.GenerarTableroBase();
+            _sudukoBoard = new SudokuBoard(size);
+            _sudukoBoard.GenerarTableroBase(size);
+            return new int[size, size];
         }
+      
 
         public string MostrarTablero()
         {
-            if (_tablero == null) return "No hay Sudoku generado.\n";
+            if (_sudukoBoard == null) return "No hay Sudoku generado.\n";
 
             StringBuilder sb = new();
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < _sudukoBoard.size; i++)
             {
-                if (i % 3 == 0) sb.AppendLine("+-------+-------+-------+");
-                for (int j = 0; j < 9; j++)
+                if (i % _sudukoBoard.subSize == 0)
+                    sb.AppendLine(new string('-', _sudukoBoard.size * 2 + _sudukoBoard.subSize + 1));
+
+                for (int j = 0; j < _sudukoBoard.size; j++)
                 {
-                    if (j % 3 == 0) sb.Append("| ");
-                    sb.Append(_tablero.Celdas[i, j] == 0 ? ". " : _tablero.Celdas[i, j] + " ");
+                    if (j % _sudukoBoard.subSize == 0) sb.Append("| ");
+                    sb.Append(_sudukoBoard.board[i, j] == 0 ? ". " : _sudukoBoard.board[i, j] + " ");
                 }
                 sb.AppendLine("|");
             }
-            sb.AppendLine("+-------+-------+-------+");
+            sb.AppendLine(new string('-', _sudukoBoard.size * 2 + _sudukoBoard.subSize + 1));
             return sb.ToString();
         }
 
         public bool InsertarNumero(int fila, int col, int valor)
         {
-            if (_tablero == null) return false;
-            if (_tablero.Celdas[fila, col] != 0) return false;
-
-            // validar fila
-            for (int i = 0; i < 9; i++)
-                if (_tablero.Celdas[fila, i] == valor) return false;
-
-            // validar col
-            for (int i = 0; i < 9; i++)
-                if (_tablero.Celdas[i, col] == valor) return false;
-
-            // validar subcuadro
-            int startRow = (fila / 3) * 3;
-            int startCol = (col / 3) * 3;
-            for (int i = startRow; i < startRow + 3; i++)
-                for (int j = startCol; j < startCol + 3; j++)
-                    if (_tablero.Celdas[i, j] == valor) return false;
-
-            _tablero.Celdas[fila, col] = valor;
-            return true;
+            return _sudukoBoard.EsValido(fila, col, valor);
         }
 
         public bool EstaCompleto()
         {
-            if (_tablero == null) return false;
-            for (int i = 0; i < 9; i++)
-                for (int j = 0; j < 9; j++)
-                    if (_tablero.Celdas[i, j] == 0)
+            if (_sudukoBoard == null) return false;
+            for (int i = 0; i < _sudukoBoard.size; i++)
+                for (int j = 0; j < _sudukoBoard.size; j++)
+                    if (_sudukoBoard.board[i, j] == 0)
                         return false;
             return true;
         }
